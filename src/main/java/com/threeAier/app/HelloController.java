@@ -1,4 +1,4 @@
-package com3aier.demo;
+package com.threeAier.app;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
