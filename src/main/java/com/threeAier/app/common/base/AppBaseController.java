@@ -1,4 +1,4 @@
-package com.threeAier.app.controller;
+package com.threeAier.app.common.base;
 
 import com.alibaba.fastjson.JSONObject;
 import com.threeAier.app.common.ThreeAierRuntimeException;

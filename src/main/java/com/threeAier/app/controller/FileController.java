@@ -1,5 +1,6 @@
 package com.threeAier.app.controller;
 
+import com.threeAier.app.common.base.AppBaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 @RequestMapping(value = "/file")
 @Api(value = "fileController", description = "文件相关上传下载")
-public class FileController extends AppBaseController{
+public class FileController extends AppBaseController {
 
     @RequestMapping(value = "/upload", produces = {"application/json"}, method = RequestMethod.POST)
     @ApiOperation(value = "上传接口", notes = "")

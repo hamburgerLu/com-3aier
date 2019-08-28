@@ -1,5 +1,6 @@
 package com.threeAier.app.controller;
 
+import com.threeAier.app.common.base.AppBaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping(value = "/")
 @Api(value = "indexController", description = "基础controller")
-public class IndexController extends AppBaseController{
+public class IndexController extends AppBaseController {
 
 
     @RequestMapping(value = "/login", produces = {"application/json"}, method = RequestMethod.POST)
