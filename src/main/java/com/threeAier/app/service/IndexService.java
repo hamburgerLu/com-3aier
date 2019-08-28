@@ -13,11 +13,8 @@ public class IndexService {
     private T3aierUserMapper t3aierUserMapper;
 
     public Boolean login(String userName,String passWord){
-
         T3aierUser user = t3aierUserMapper.login(userName,passWord);
         if(user!=null){
-
-
             return true;
         }
         return false;

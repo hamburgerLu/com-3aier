@@ -150,7 +150,7 @@ label {
     content: " (" attr(title) ")";
   }
   /*
-     * Don't show links for images, or javascript/internal links
+     * Don't show links for img, or javascript/internal links
      */
   .ir a:after,
   a[href^="javascript:"]:after,
@@ -362,7 +362,7 @@ a#mobile_menu {
   padding-top: 80px;
 }
 .top-c {
-  background: url(../images/slider-bg.png) no-repeat top center;
+  background: url(../img/slider-bg.png) no-repeat top center;
   background-size: cover;
   width: 100%;
   height: 504px;
@@ -398,7 +398,7 @@ a#mobile_menu {
   margin: 100px 0 25px 0;
 }
 #services {
-  background: url(../images/service-bg.png) no-repeat top center;
+  background: url(../img/service-bg.png) no-repeat top center;
   background-size: cover;
   padding-top: 60px;
   padding-bottom: 50px;
@@ -460,7 +460,7 @@ a#mobile_menu {
   transform: rotate(360deg);
 }
 #products {
-  background: url(../images/products-bg.png) no-repeat top center;
+  background: url(../img/products-bg.png) no-repeat top center;
   background-size: cover;
   position: relative;
   z-index: 11;
@@ -508,7 +508,7 @@ a#mobile_menu {
 
 .video-feature {
   padding: 90px 0;
-  background: url(../images/video-bg.png) no-repeat top center;
+  background: url(../img/video-bg.png) no-repeat top center;
   background-size: cover;
   position: relative;
   z-index: 12;
@@ -517,7 +517,7 @@ a#mobile_menu {
 
 #contact {
   color: #ffffff;
-  background: url(../images/contact-bg.png) no-repeat top center;
+  background: url(../img/contact-bg.png) no-repeat top center;
   background-size: cover;
   margin-top: -40px;
   padding-bottom: 100px;
@@ -578,7 +578,7 @@ a#mobile_menu {
   outline: 0;
 }
 .site-footer {
-  background: url(../images/footer-bg.png) no-repeat bottom;
+  background: url(../img/footer-bg.png) no-repeat bottom;
   background-size: cover;
   color: #ffffff;
   position: relative;

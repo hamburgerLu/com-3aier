@@ -1,9 +1,12 @@
 package com.threeAier.app.configuration;
 
+import com.threeAier.app.framework.LogInterceptor;
+import com.threeAier.app.framework.TraceInterceptor;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -38,5 +41,25 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         factory.setMaxRequestSize("102400KB");
         return factory.createMultipartConfig();
     }
+
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        // 拦截器的配置 拦截所有业务操作 如为查询操作可以
+        registry.addInterceptor(this.traceInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(this.logIntercept()).addPathPatterns("/**");
+    }
+
+
+    @Bean
+    public LogInterceptor logIntercept() {
+        return new LogInterceptor();
+    }
+
+    @Bean
+    public TraceInterceptor traceInterceptor(){
+        return new TraceInterceptor();
+    }
+
 
 }

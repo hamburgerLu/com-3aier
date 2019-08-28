@@ -1,6 +1,7 @@
 package com.threeAier.app.controller;
 
 import com.threeAier.app.common.base.AppBaseController;
+import com.threeAier.app.configuration.NeedLogin;
 import com.threeAier.app.dao.Paginate;
 import com.threeAier.app.dao.domain.T3aierArticle;
 import com.threeAier.app.service.ArticleService;
@@ -46,6 +47,7 @@ public class ArticleController extends AppBaseController {
      */
     @RequestMapping(value = "/get", produces = {"application/json"}, method = RequestMethod.GET)
     @ApiOperation(value = "根据Id查找对应的文章", notes = "")
+    @NeedLogin
     public ResponseEntity getById(@ApiParam(value = "文章的主键ID", required = true) @RequestParam Integer id) {
         T3aierArticle article = articleService.getById(id);
         return new ResponseEntity(ok("获取成功",article), HttpStatus.OK);
