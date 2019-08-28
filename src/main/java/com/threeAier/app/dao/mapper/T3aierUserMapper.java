@@ -3,6 +3,7 @@ package com.threeAier.app.dao.mapper;
 import com.threeAier.app.dao.MyMapper;
 import com.threeAier.app.dao.domain.T3aierUser;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -27,5 +28,11 @@ public interface T3aierUserMapper extends MyMapper<T3aierUser> {
             "where id = #{id}; " +
             "</script>")
     public int updateUser(T3aierUser t3aierUser);
+
+
+    @Select("<script>" +
+            "select * from user_name = #{userName} and pass_word = password(#{passWord}) and delete_flag = 0 ;"  +
+            "</script>")
+    public T3aierUser login(@Param("userName") String userName, @Param("passWord") String passWord);
 
 }
