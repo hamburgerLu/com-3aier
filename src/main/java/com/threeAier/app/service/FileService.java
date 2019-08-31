@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -22,6 +23,12 @@ public class FileService extends AppBaseService {
     private T3aierArticleFileMapper t3aierArticleFileMapper;
 
     private static String address_pre = "";
+
+
+
+    public List<T3aierArticleFile> getFiles(int id){
+       return t3aierArticleFileMapper.selectByArticleId(id);
+    }
 
 
     /**

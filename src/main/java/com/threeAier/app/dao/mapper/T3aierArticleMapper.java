@@ -10,7 +10,7 @@ import java.util.List;
 public interface T3aierArticleMapper extends MyMapper<T3aierArticle> {
     @Select("<script>"
             + "SELECT * "
-            + "FROM t_3aier_article "
+            + "FROM t_3aier_article where delete_flag = 0"
             + "</script>")
     public List<T3aierArticle> getList(T3aierArticle t3aierArticle);
 

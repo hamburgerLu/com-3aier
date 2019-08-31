@@ -4,9 +4,11 @@ import com.threeAier.app.common.ThreeAierRuntimeException;
 import com.threeAier.app.common.base.AppBaseService;
 import com.threeAier.app.dao.Paginate;
 import com.threeAier.app.dao.domain.T3aierArticle;
+import com.threeAier.app.dao.mapper.T3aierArticleFileMapper;
 import com.threeAier.app.dao.mapper.T3aierArticleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,7 +19,11 @@ public class ArticleService extends AppBaseService {
     @Autowired
     private T3aierArticleMapper t3aierArticleMapper;
 
+    @Autowired
+    private FileService fileService;
 
+    @Autowired
+    private T3aierArticleFileMapper t3aierArticleFileMapper;
 
     public Paginate queryPagenate(T3aierArticle t3aierArticle , Integer pageNo, Integer pageSize) {
         //1、增加分页参数
@@ -41,31 +47,57 @@ public class ArticleService extends AppBaseService {
 
 
 
-    public void add(T3aierArticle t3aierArticle){
+    public int add(T3aierArticle t3aierArticle,List<MultipartFile> files){
         if(t3aierArticle.getName()==null){
             throw new ThreeAierRuntimeException("文章标题缺失");
         }
+
+        t3aierArticle.setDeleteFlag((short)0);
+        t3aierArticle.setStatus((short)1);
 
         int result = t3aierArticleMapper.insertSelective(t3aierArticle);
         if(result<=0){
             throw new ThreeAierRuntimeException("插入失败");
         }
 
+        if(files!=null){
+            //插入附件
+            for(MultipartFile file : files){
+                fileService.upload(file,t3aierArticle.getId());
+            }
+        }
+
+        return t3aierArticle.getId();
     }
 
 
-    public void modify(T3aierArticle t3aierArticle){
+    public void modify(T3aierArticle t3aierArticle,List<MultipartFile> files,List<Integer> articleIds){
         if(t3aierArticle.getId()==null){
             throw new ThreeAierRuntimeException("文章主键缺失");
         }
-        if(t3aierArticle.getName()==null){
-            throw new ThreeAierRuntimeException("文章标题缺失");
-        }
 
-        int result = t3aierArticleMapper.updateByPrimaryKey(t3aierArticle);
+//        if(t3aierArticle.getName()==null){
+//            throw new ThreeAierRuntimeException("文章标题缺失");
+//        }
+
+        int result = t3aierArticleMapper.updateByPrimaryKeySelective(t3aierArticle);
         if(result<=0){
             throw new ThreeAierRuntimeException("更新失败");
         }
+
+        if(articleIds!=null && articleIds.size()>0){
+            //删除所有附件
+            t3aierArticleFileMapper.deleteByArticleFileIds(articleIds);
+        }
+
+
+        if(files!=null) {
+            //插入附件
+            for (MultipartFile file : files) {
+                fileService.upload(file, t3aierArticle.getId());
+            }
+        }
+
     }
 
 

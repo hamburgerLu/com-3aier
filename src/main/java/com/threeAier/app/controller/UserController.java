@@ -1,6 +1,7 @@
 package com.threeAier.app.controller;
 
 import com.threeAier.app.common.base.AppBaseController;
+import com.threeAier.app.configuration.NeedLogin;
 import com.threeAier.app.dao.Paginate;
 import com.threeAier.app.dao.domain.T3aierUser;
 import com.threeAier.app.service.UserService;
@@ -34,6 +35,7 @@ public class UserController extends AppBaseController {
      */
     @RequestMapping(value = "/list", produces = {"application/json"}, method = RequestMethod.POST)
     @ApiOperation(value = "用户列表页", notes = "")
+    @NeedLogin
     public ResponseEntity list(@ApiParam(value = "t3aierUser", required = true) @RequestBody T3aierUser t3aierUser){
         Paginate paginate = userService.queryPagenate(t3aierUser,getPageIndex(),getPageSize());
         return new ResponseEntity(ok("获取成功",paginate),HttpStatus.OK);
@@ -48,6 +50,7 @@ public class UserController extends AppBaseController {
      */
     @RequestMapping(value = "/get", produces = {"application/json"}, method = RequestMethod.GET)
     @ApiOperation(value = "根据Id查找对应的用户", notes = "")
+    @NeedLogin
     public ResponseEntity getById(@ApiParam(value = "用户的主键ID", required = true) @RequestParam Integer id) {
         T3aierUser t3aierUser = userService.getById(id);
         return new ResponseEntity(ok("获取成功",t3aierUser), HttpStatus.OK);
@@ -61,6 +64,7 @@ public class UserController extends AppBaseController {
      */
     @RequestMapping(value = "/add", produces = {"application/json"}, method = RequestMethod.POST)
     @ApiOperation(value = "新增管理员", notes = "")
+    @NeedLogin
     public ResponseEntity add(@ApiParam(value = "t3aierUser", required = true) @RequestBody T3aierUser t3aierUser){
         userService.add(t3aierUser);
         return new ResponseEntity(ok("新增成功",null), HttpStatus.OK);
@@ -74,6 +78,7 @@ public class UserController extends AppBaseController {
      */
     @RequestMapping(value = "/modify", produces = {"application/json"}, method = RequestMethod.POST)
     @ApiOperation(value = "编辑管理员", notes = "")
+    @NeedLogin
     public ResponseEntity modify(@ApiParam(value = "t3aierUser", required = true) @RequestBody T3aierUser t3aierUser){
         userService.modify(t3aierUser);
         return new ResponseEntity(ok("登录成功",null), HttpStatus.OK);

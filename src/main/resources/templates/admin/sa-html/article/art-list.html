@@ -6,15 +6,15 @@
 
 		<!-- 所有的 css 资源 -->
 		<link rel="stylesheet" href="https://unpkg.com/element-ui@2.8.2/lib/theme-chalk/index.css">
-		<link rel="stylesheet" href="../../static/sa.css">
+		<link rel="stylesheet" href="../../static/static/sa.css">
 
 		<!-- 所有的 js 资源 -->
 		<script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
 		<script src="https://unpkg.com/element-ui@2.8.2/lib/index.js"></script>
 		
 		<script src="https://unpkg.com/jquery@3.4.1/dist/jquery.js"></script>
-		<script src="../../static/kj/layer/layer.js"></script>
-		<script src="../../static/sa.js"></script>
+		<script src="../../static/static/kj/layer/layer.js"></script>
+		<script src="../../static/static/sa.js"></script>
 		<script src="data-list.js"></script>
 
 	</head>
@@ -102,7 +102,8 @@
 				methods: {
 					// 数据刷新
 					f5: function() {
-						sa.ajax2('/VocArticle/getList', this.p, function(res){
+						sa.ajax2('/article/list', this.p, function(res){
+						    debugger;
 							// this.dataList = res.data;	// 数据
 							// this.page = res.page;		// 分页 
 						}.bind(this));

@@ -73,7 +73,7 @@ sp.dropList = [		// 头像点击处可操作的选项
 			// location="login.html";
 			layer.confirm('退出登录？', function(res) {
 				layer.alert('注销成功', function() {
-					location.href = "login.html";
+					location.href = "/login";
 				})
 			});
 		}

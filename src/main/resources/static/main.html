@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>主页</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="https://unpkg.com/element-ui@2.8.2/lib/theme-chalk/index.css">
+		<style type="text/css">
+			* {
+				padding: 0;
+				margin: 0;
+			}
+
+			body {
+				background-color: #EEE;
+			}
+
+			.app {
+				font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+			}
+
+			.content-box {
+				margin: 1em;
+				padding: 1em;
+				background-color: #FFF;
+				color: #666;
+			}
+
+			.el-tag{border-radius: 1px;}
+
+			/*800之下*/
+			@media(max-width: 800px) {
+				.kapian {
+					width: 100% !important;
+					margin-right: 0px !important;
+				}
+
+				.saoma {
+					display: none;
+				}
+			}
+		</style>
+	</head>
+	<body>
+
+		<div class="app">
+
+			admin
+
+		</div>
+
+		<script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+		
+		<script type="text/javascript">
+			Vue.config.productionTip = false;
+		</script>
+		<script src="https://unpkg.com/element-ui@2.8.2/lib/index.js"></script>
+		<script type="text/javascript">
+			new Vue({
+				el: '.app',
+				data: {
+
+				},
+				methods: {
+					// 没了
+					meile: function() {
+						this.$message({
+							message: '没了还点',
+							type: 'warning'
+						});
+					},
+					// 显示文档页面
+					openDoc: function() {
+						parent.sp.selectMenu(11);
+					}
+
+				}
+			})
+		</script>
+
+
+	</body>
+</html>

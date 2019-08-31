@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>文章发表</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<!-- 所有的 css 资源 -->
+		<link rel="stylesheet" href="https://unpkg.com/element-ui@2.8.2/lib/theme-chalk/index.css">
+		<link rel="stylesheet" href="../../static/static/sa.css">
+
+		<!-- 所有的 js 资源 -->
+		<script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+		<script src="https://unpkg.com/element-ui@2.8.2/lib/index.js"></script>
+		<script src="https://unpkg.com/wangeditor@3.1.1/release/wangEditor.min.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script src="https://unpkg.com/jquery@3.4.1/dist/jquery.js"></script>
+		<script src="../../static/static/kj/layer/layer.js"></script>
+		<script src="../../static/static/sa.js"></script>
+		<script src="data-list.js"></script>
+		<style>
+
+			.c-item .c-label{width: 7em;}
+
+			/* wang富文本编辑器 */
+			.editor-item{width: 100%; height: auto;}
+			.editor-item .c-label{float: left;}
+			.editor-item .editor-box{float: left; width: 80%; margin-top: 0px; margin-left: 5px;} 
+            .editor-item #editor{min-height: 300px; background-color: #FFF;}
+            .editor-item .w-e-toolbar{padding-top: 5px !important;}
+			
+			/* 尽量小点 */
+			.editor-item .editor-box{float: left; width: 700px;} 
+			.editor-item .editor-box img{max-width: 200px !important;}
+
+        </style>
+
+	</head>
+	<body>
+
+		<!-- 防止margin向下击穿 -->
+		<div style="margin-top: -1em;"><br></div>
+
+		<div class="vue-box">
+
+			<!-- 参数栏 -->
+			<div class="c-panel">
+				<div class="c-title">文章添加</div>
+				<el-form ref="form" id="form">
+
+					<br />
+					<div class="c-item" style="width: 100%;">
+						<label class="c-label">文章标题：</label>
+						<el-input size="small" v-model="m.title" style="width: 700px;" placeholder="例如：2002年的第一场雪"></el-input>
+					</div>
+
+					<br />
+					<div class="c-item editor-item">
+						<label class="c-label">文章内容：</label>
+						<div class="editor-box">
+							<div id="editor">
+								
+							</div>
+						</div>
+					</div>
+
+					<br />
+					<div class="c-item">
+						<label class="c-label">上传附件</label>
+						<div style="display: inline-block; width: 700px;">
+							<el-upload
+									class="upload-demo"
+									ref="upload"
+									action="/file/upload/"
+									:data="upId"
+									:on-preview="handlePreview"
+									:on-remove="handleRemove"
+									:file-list="fileList"
+									:auto-upload="false">
+								<el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+								<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+							</el-upload>
+						</div>
+					</div>
+					
+					<div style="margin-top: 10px;"></div>
+					<div class="c-item">
+						<label class="c-label"></label>
+						<el-button type="primary" icon="el-icon-plus" size="small" @click="ok">确定</el-button>
+					</div>
+
+
+				</el-form>
+			</div>
+
+			<!--<div class="c-panel" style="background-color: rgba(0,0,0,0);">-->
+				<!--wangEditor：<el-link type="primary" href="http://www.wangeditor.com/" target="_blank">-->
+					<!--基于javascript和css开发的 Web富文本编辑器， 轻量、简洁、易用、开源免费-->
+				<!--</el-link>-->
+			<!--</div>-->
+
+
+
+		</div>
+
+		<script>
+			
+			
+			
+			// 创建一个空的 m 
+			function create_m() {
+				return {
+					title: '',
+					content: '',
+					is_public: 1
+				}
+			}
+			
+			// 创建编辑器
+			function create_editor(content) {
+				var E = window.wangEditor
+				window.editor = new E('#editor');
+
+				editor.customConfig.menus = [
+					'head', 'fontSize', 'fontName', 'italic', 'underline', 'strikeThrough', 'foreColor', 'backColor', 'link', 'list',
+					'justify', 'quote', 'emoticon', 'image', 'table', 'code', 'undo', 'redo' // 重复
+				]
+				editor.customConfig.debug = true; // debug模式
+				editor.customConfig.uploadFileName = 'file'; // 图片流name
+				editor.customConfig.withCredentials = true; // 跨域携带cookie
+				editor.customConfig.uploadImgShowBase64 = true   	// 使用 base64 保存图片
+				editor.create(); // 创建
+				editor.txt.html(content);	// 为编辑器赋值
+			}
+			
+
+			var app = new Vue({
+				el: '.vue-box',
+				data: {
+					id: sa.$util.getUrlArgs('id', 0),
+					upId:{},
+                    sa: sa,// 从url中获取传值
+					m: create_m(),
+                    fileList: [],
+                    fileDel:[]
+				},
+				methods: {
+                    submitUpload() {
+                        this.$refs.upload.submit();
+                    },
+                    handleRemove(file, fileList) {
+                        if(file.id){
+                            this.fileDel.push(file.id);
+						}
+                    },
+                    handlePreview(file) {
+                        console.log(file);
+                    },
+					// 提交 
+					ok: function() {
+						// 开始增加或修改
+						if(this.id == 0) {
+						    let where = {
+                                content: editor.txt.text(),
+                                name: this.m.title
+                            }
+                            let _that = this;
+                                axios.post('/article/add', where)
+                                    .then(function (response) {
+                                        _that.upId.id = response.data.data;
+                                        _that.$refs.upload.submit();
+                                        layer.alert('新增成功', function(index){
+                                            layer.close(index);
+                                            // this.parent.app.f5();
+                                            parent.layer.closeAll('iframe');
+                                            location.reload();
+
+                                        }.bind(this));
+                                    })
+                                    .catch(function (error) {
+                                        console.log(error);
+                                    });
+						} else {
+
+                            let where = {
+                                t3aierArticle:{
+                                content: editor.txt.text(),
+									name: this.m.title,
+                                deleteFlag:0,
+                                id:this.id
+                              },
+                                articleIds:this.fileDel
+							};
+                            // this.fileTemp.forEach(i=>{
+                            //     this.fileList.forEach(m=>{
+                            //         if(m.id!==i.id){
+                            //             where.articleIds.push(i.id);
+							// 		}
+							// 	})
+							// })
+                            // this.fileList.forEach(i=>{
+                            //     this.fileTemp.forEach(m=>{
+                            //         if(m.id!==i.id){
+                            //             where.articleIds.push(i.id);
+                            //         }
+                            //     })
+                            // })
+                            let that = this;
+                            axios.post('/article/modify', where)
+                                .then(function (response) {
+                                    layer.alert('编辑成功', {}, function(){
+                                        this.parent.app.f5();
+                                        parent.layer.closeAll('iframe');
+                                    }.bind(this));
+                                })
+                                .catch(function (error) {
+                                    console.log(error);
+                                });
+                            this.upId.id = this.id;
+                            this.$refs.upload.submit();
+						}
+
+					},
+				},
+				mounted: function() {
+					
+					// 如果是添加
+					if(this.id == 0){
+						create_editor(this.m.content);		// 创建富文本编辑器
+					} else {
+						// id 非 0 代表 是要修改
+						let that = this;
+                        axios.get('/article/get', {
+                            params: {
+                                id: this.id
+                            }
+                        })
+                            .then(function (response) {
+                                that.m.title = response.data.data.article.name;
+                                that.m.content =response.data.data.article.content;
+                                create_editor(that.m.content);
+                                that.fileList = response.data.data.aierArticleFiles.map(i=>{
+                                    return {id:i.id,name:i.fileName}
+								});
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+							// 创建富文本编辑器
+					}
+
+				}
+			})
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+
+
+		</script>
+
+	</body>
+</html>

@@ -49,6 +49,31 @@
         .top-c {
             color:#444;
         }
+        .nc-l{
+            position: relative;
+        }
+        .nc-l li{
+            font-size: 18px;
+        }
+        .nc-l .text{
+            height: 40px;
+            line-height: 40px;
+            border-bottom: 1px solid #eee;
+        }
+        .nc-l .el-card__body{
+            min-height:400px;
+        }
+        .pageMini{
+            position: absolute;
+            bottom: 10px;
+            left: 50px;
+        }
+        /*.news-content{*/
+            /*background: #eee;*/
+        /*}*/
+        /*.nc{*/
+            /*background: #eee;*/
+        /*}*/
     </style>
 </head>
 <body>
@@ -100,43 +125,43 @@
         </div>
     </div>
 </header> <!-- .site-header -->
-
-
+<div class="vue-news">
 <!-- #flow -->
+    <div class="top-c">
 <div class="container">
 <div class="news-content">
     <div class="nc-l">
-        <ul>
-            <li>11111111111111111</li>
-            <li>11111111111111111</li>
-            <li>11111111111111111</li>
-            <li>11111111111111111</li>
-            <li>11111111111111111</li>
-            <li>11111111111111111</li>
-            <li>11111111111111111</li>
-            <li>11111111111111111</li>
-            <li>11111111111111111</li>
-            <li>11111111111111111</li>
-            <li>11111111111111111</li>
-            <li>11111111111111111</li>
-        </ul>
-    </div>
-    <div class="nc-r">
+        <!--<ul>-->
+            <!--<li style="cursor:pointer" v-for="(i,index) in dataList"  :key="index"> {{i.name}}</li>-->
+        <!--</ul>-->
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <span>文章列表</span>
+            </div>
+            <div  style="cursor:pointer" v-for="(i,index) in dataList" @click="godetail(index)" class="text item">
+                {{i.name}}
+            </div>
 
-        <p>11111111111111111111111111111111111</p>
-        <p>11111111111111111111111111111111111</p>
-        <p>11111111111111111111111111111111111</p>
-        <p>11111111111111111111111111111111111</p>
-        <p>11111111111111111111111111111111111</p>
-        <p>11111111111111111111111111111111111</p>
-        <p>11111111111111111111111111111111111</p>
-        <p>11111111111111111111111111111111111</p>
-        <p>11111111111111111111111111111111111</p>
-        <p>11111111111111111111111111111111111</p>
+        <div class="pageMini">
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                small
+                layout="prev, pager, next"
+                :total="page.count"
+                >
+        </el-pagination>
+
+        </div>
+        </el-card>
+    </div>
+    <div v-html="dataContent" class="nc-r">
+
     </div>
 </div>
 </div>
-
+    </div>
+</div>
 <!-- FOOTER -->
 <footer class="news-footer">
     <div class="container">
@@ -175,6 +200,75 @@
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/plugins.js"></script>
 <script src="/js/templatemo_custom.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/element-ui@2.8.2/lib/theme-chalk/index.css">
+<script src="../../static/static/sa.js"></script>
+<!-- 所有的 js 资源 -->
+<script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui@2.8.2/lib/index.js"></script>
+<script>
+    var app = new Vue({
+        el: '.vue-news',
+        data: {
+            sa: sa,
+            p: { // 查询参数
+            },
+            dataContent:'',
+            page: sa.$fast.getPage(),// 分页信息
+            dataList: [] // 数据集合
+        },
+        methods: {
+            // 数据刷新
+            f5: function() {
+                let _that = this;
+                axios.post('/article/list?pageSize='+ this.page.pageSize+'&pageNo='+this.page.pageNo,{})
+                    .then(function (response) {
+                        console.log(response);
+                        _that.dataList = response.data.data.pageList;
+                        _that.dataContent = _that.dataList[0].content||'';
+                        _that.page.count=response.data.data.totalCount;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            godetail(index){
+                this.dataContent = this.dataList[index].content||'';
+            },
+            handleSizeChange(val) {
+                this.page.pageSize = val;
+                this.f5();
+            },
+            handleCurrentChange(val) {
+                this.page.pageNo = val;
+                this.f5();
+            },
+            deletId(val){
+                let where = {
+                    t3aierArticle:{
+                        deleteFlag:1,
+                        id:val
+                    },
+                    articleIds:[]
+                };
+                let _that = this;
+                axios.post('/article/modify', where)
+                    .then(function (response) {
+                        layer.alert('删除成功', {}, function(index){
+                            _that.f5();
+                            layer.close(index);
+                        }.bind(this));
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
 
 
+        },
+        created: function() {
+            this.f5();
+        }
+    })
+</script>
 </body></html>

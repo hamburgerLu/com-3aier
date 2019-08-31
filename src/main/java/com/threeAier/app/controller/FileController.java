@@ -1,6 +1,7 @@
 package com.threeAier.app.controller;
 
 import com.threeAier.app.common.base.AppBaseController;
+import com.threeAier.app.configuration.NeedLogin;
 import com.threeAier.app.service.FileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @SuppressWarnings("all")
@@ -23,10 +23,12 @@ public class FileController extends AppBaseController {
     @Autowired
     private FileService fileService;
 
-    @RequestMapping(value = "/upload", produces = {"application/json"}, method = RequestMethod.POST)
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ApiOperation(value = "上传接口", notes = "")
-    public ResponseEntity upload(MultipartFile multipartFile,Integer articleId){
-        fileService.upload(multipartFile,articleId);
+    @ResponseBody
+//    @NeedLogin
+    public ResponseEntity upload( MultipartFile file, Integer id){
+        fileService.upload(file,id);
         return new ResponseEntity(ok("上传成功",null), HttpStatus.OK);
     }
 
