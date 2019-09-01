@@ -54,6 +54,7 @@ public class ArticleService extends AppBaseService {
 
         t3aierArticle.setDeleteFlag((short)0);
         t3aierArticle.setStatus((short)1);
+        t3aierArticle.setPageView(0);
 
         int result = t3aierArticleMapper.insertSelective(t3aierArticle);
         if(result<=0){

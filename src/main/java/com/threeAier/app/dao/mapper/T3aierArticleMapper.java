@@ -16,7 +16,7 @@ public interface T3aierArticleMapper extends MyMapper<T3aierArticle> {
 
 
     @Update("<script>"
-            + "UPDATE t_3aier_article set page_view = page_view+1; "
+            + "UPDATE t_3aier_article set page_view = page_view+1 where id = #{id}; "
             + "</script>")
     public int click(Integer id);
 }

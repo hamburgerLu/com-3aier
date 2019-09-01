@@ -158,6 +158,10 @@
     <div v-html="dataContent" class="nc-r">
 
     </div>
+    <div v-html="dataTitle" class="nc-r">
+
+    </div>
+
 </div>
 </div>
     </div>
@@ -214,6 +218,7 @@
             p: { // 查询参数
             },
             dataContent:'',
+            dataTitle:'',
             page: sa.$fast.getPage(),// 分页信息
             dataList: [] // 数据集合
         },
@@ -226,6 +231,7 @@
                         console.log(response);
                         _that.dataList = response.data.data.pageList;
                         _that.dataContent = _that.dataList[0].content||'';
+                        _that.dataTitle = _that.dataList[0].name||'';
                         _that.page.count=response.data.data.totalCount;
                     })
                     .catch(function (error) {
@@ -234,6 +240,16 @@
             },
             godetail(index){
                 this.dataContent = this.dataList[index].content||'';
+                this.dataTitle = this.dataList[index].name||'';
+                //发送请求，点击量加一
+                axios.get('/article/click?id='+this.dataList[index].id)
+                    .then(function (response) {
+                        console.log("点击量加1");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
             },
             handleSizeChange(val) {
                 this.page.pageSize = val;
