@@ -26,7 +26,7 @@ public class FileController extends AppBaseController {
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ApiOperation(value = "上传接口", notes = "")
     @ResponseBody
-//    @NeedLogin
+    @NeedLogin
     public ResponseEntity upload( MultipartFile file, Integer id){
         fileService.upload(file,id);
         return new ResponseEntity(ok("上传成功",null), HttpStatus.OK);

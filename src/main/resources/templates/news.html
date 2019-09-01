@@ -30,6 +30,9 @@
     <link rel="stylesheet" href="/css/templatemo_style.css"/>
 
     <script src="/js/modernizr-2.6.2.min.js"></script>
+    <script>
+
+    </script>
     <style>
         @media (min-width: 960px) {
             .top-c h3.topc-title {
@@ -155,11 +158,15 @@
         </div>
         </el-card>
     </div>
-    <div v-html="dataContent" class="nc-r">
+    <div class="nc-r" style="width: 100%;padding-top: 0px;">
+     <div style="text-align: right">
+         <p  style="line-height: 20px;font-size: 20px;text-align: center;">{{dataContent.name}}</p>
+         <el-tag type="info">点击量:{{dataContent.pageView}}</el-tag>
+         <el-tag type="info">更新时间:{{formatDateTime(dataContent.updateTime)}}</el-tag>
+     </div>
+        <div v-html="dataContent.content"  class="nc-r-c">
 
-    </div>
-    <div v-html="dataTitle" class="nc-r">
-
+        </div>
     </div>
 
 </div>
@@ -211,6 +218,9 @@
 <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
 <script src="https://unpkg.com/element-ui@2.8.2/lib/index.js"></script>
 <script>
+
+
+
     var app = new Vue({
         el: '.vue-news',
         data: {
@@ -219,6 +229,9 @@
             },
             dataContent:'',
             dataTitle:'',
+            pageView:'',
+            updater:'',
+            updateTime:'',
             page: sa.$fast.getPage(),// 分页信息
             dataList: [] // 数据集合
         },
@@ -230,17 +243,33 @@
                     .then(function (response) {
                         console.log(response);
                         _that.dataList = response.data.data.pageList;
-                        _that.dataContent = _that.dataList[0].content||'';
-                        _that.dataTitle = _that.dataList[0].name||'';
+                        _that.dataContent = _that.dataList[0];
                         _that.page.count=response.data.data.totalCount;
                     })
                     .catch(function (error) {
                         console.log(error);
                     });
             },
+            formatDateTime(inputTime) {
+                var date = new Date(inputTime);
+                var y = date.getFullYear();
+                var m = date.getMonth() + 1;
+                m = m < 10 ? ('0' + m) : m;
+                var d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                var h = date.getHours();
+                h = h < 10 ? ('0' + h) : h;
+                var minute = date.getMinutes();
+                var second = date.getSeconds();
+                minute = minute < 10 ? ('0' + minute) : minute;
+                second = second < 10 ? ('0' + second) : second;
+                return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;
+            },
             godetail(index){
-                this.dataContent = this.dataList[index].content||'';
-                this.dataTitle = this.dataList[index].name||'';
+
+                this.dataList[index].pageView +=1 ;
+                this.dataContent = this.dataList[index];
+                // this.dataTitle = this.dataList[index].name||'';
                 //发送请求，点击量加一
                 axios.get('/article/click?id='+this.dataList[index].id)
                     .then(function (response) {

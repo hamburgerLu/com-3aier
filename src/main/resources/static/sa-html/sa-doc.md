@@ -39,7 +39,7 @@ sp.closePageById('1-1');	// 关闭一个 页面，根据 id
 #### 6、如何设置登录后右上角显示的user信息
 ``` js
 sp.user = { 
-    username: 'root', // 昵称	
+    username: 'admin', // 昵称	
     avatar: 'sa-resources/admin-logo.png' // 头像地址 
 }
 ```

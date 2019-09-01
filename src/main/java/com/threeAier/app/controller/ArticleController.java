@@ -90,7 +90,7 @@ public class ArticleController extends AppBaseController {
 //        List<MultipartFile> files =  (List<MultipartFile>) jsonObject.get("files");
 
         HttpSession session=httpServletRequest.getSession();
-        String userName = session.getAttribute("USER")==null?"sys":session.getAttribute("USER").toString();
+        String userName = session.getAttribute("USER")==null?"admin":session.getAttribute("USER").toString();
 
         t3aierArticle.setCreater(userName);
         t3aierArticle.setUpdater(userName);
@@ -109,7 +109,7 @@ public class ArticleController extends AppBaseController {
      */
     @RequestMapping(value = "/modify", produces = {"application/json"}, method = RequestMethod.POST)
     @ApiOperation(value = "编辑文章", notes = "")
-//    @NeedLogin
+    @NeedLogin
     public ResponseEntity modify(HttpServletRequest httpServletRequest,@ApiParam(value = "jsonObject", required = true) @RequestBody JSONObject jsonObject) throws InvocationTargetException, IllegalAccessException {
 
 //        List<MultipartFile> files =  (List<MultipartFile>) jsonObject.get("files");
@@ -118,7 +118,7 @@ public class ArticleController extends AppBaseController {
         List<Integer> articleIds  = (List<Integer>) jsonObject.get("articleIds");
 
         HttpSession session=httpServletRequest.getSession();
-        String userName = session.getAttribute("USER")==null?"sys":session.getAttribute("USER").toString();
+        String userName = session.getAttribute("USER")==null?"admin":session.getAttribute("USER").toString();
 
         t3aierArticle.setUpdater(userName);
         t3aierArticle.setUpdateTime(new Date());

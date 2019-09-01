@@ -78,7 +78,7 @@
 									:file-list="fileList"
 									:auto-upload="false">
 								<el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-								<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+								<!--<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
 							</el-upload>
 						</div>
 					</div>
@@ -167,15 +167,24 @@
                             let _that = this;
                                 axios.post('/article/add', where)
                                     .then(function (response) {
-                                        _that.upId.id = response.data.data;
-                                        _that.$refs.upload.submit();
-                                        layer.alert('新增成功', function(index){
-                                            layer.close(index);
-                                            // this.parent.app.f5();
-                                            parent.layer.closeAll('iframe');
-                                            location.reload();
+                                        debugger;
+                                        {
+                                            _that.upId.id = response.data.data;
+                                            _that.$refs.upload.submit();
 
-                                        }.bind(this));
+                                            // layer.alert('编辑成功', {}, function(){
+                                            //     this.parent.app.f5();
+                                            //     parent.layer.closeAll('iframe');
+                                            // }.bind(this));
+
+                                            layer.alert('新增成功', function(index){
+                                                layer.close(index);
+                                                // this.parent.app.f5();
+                                                parent.layer.closeAll('iframe');
+                                                // _that.parent.app.f5();
+                                                window.location.herf="/back_index";
+                                            }.bind(this));
+										}
                                     })
                                     .catch(function (error) {
                                         console.log(error);
@@ -208,6 +217,9 @@
                             let that = this;
                             axios.post('/article/modify', where)
                                 .then(function (response) {
+                                    // if(response.data.code == undefined){
+									// 	window.location.herf="/login";
+									// }
                                     layer.alert('编辑成功', {}, function(){
                                         this.parent.app.f5();
                                         parent.layer.closeAll('iframe');
