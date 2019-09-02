@@ -67,9 +67,9 @@
             min-height:400px;
         }
         .pageMini{
-            position: absolute;
-            bottom: 10px;
-            left: 50px;
+            width: 100%;
+            display: block;
+            margin: 20px auto;
         }
         /*.news-content{*/
             /*background: #eee;*/
@@ -132,7 +132,7 @@
 <!-- #flow -->
     <div class="top-c">
 <div class="container">
-<div class="news-content">
+<div class="news-content" v-if="dataList.length>0">
     <div class="nc-l">
         <!--<ul>-->
             <!--<li style="cursor:pointer" v-for="(i,index) in dataList"  :key="index"> {{i.name}}</li>-->
@@ -141,7 +141,7 @@
             <div slot="header" class="clearfix">
                 <span>文章列表</span>
             </div>
-            <div  style="cursor:pointer" v-for="(i,index) in dataList" @click="godetail(index)" class="text item">
+            <div  style="cursor:pointer" v-for="(i,index) in dataList" @click="godetail(i)" class="text item">
                 {{i.name}}
             </div>
 
@@ -149,6 +149,7 @@
         <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
+                :pager-count="5"
                 small
                 layout="prev, pager, next"
                 :total="page.count"
@@ -162,11 +163,16 @@
      <div style="text-align: right">
          <p  style="line-height: 20px;font-size: 20px;text-align: center;">{{dataContent.name}}</p>
          <el-tag type="info">点击量:{{dataContent.pageView}}</el-tag>
-         <el-tag type="info">更新时间:{{formatDateTime(dataContent.updateTime)}}</el-tag>
+         <el-tag type="info">更新时间:{{formatDateTime(dataContent.createTime)}}</el-tag>
      </div>
-        <div v-html="dataContent.content"  class="nc-r-c">
+        <div style="min-height: 200px" v-html="dataContent.content"  class="nc-r-c">
 
         </div>
+        <div v-for="i in downList"  :key="i.id">
+            <el-link  :href="'/file/download?id='+i.id" type="primary" >
+                <span class="el-icon-paperclip"></span>{{i.fileName}}</el-link>
+        </div>
+
     </div>
 
 </div>
@@ -232,6 +238,7 @@
             pageView:'',
             updater:'',
             updateTime:'',
+            downList:[],
             page: sa.$fast.getPage(),// 分页信息
             dataList: [] // 数据集合
         },
@@ -243,7 +250,8 @@
                     .then(function (response) {
                         console.log(response);
                         _that.dataList = response.data.data.pageList;
-                        _that.dataContent = _that.dataList[0];
+                        // _that.dataContent = _that.dataList[0];
+                        _that.godetail(_that.dataList[0]);
                         _that.page.count=response.data.data.totalCount;
                     })
                     .catch(function (error) {
@@ -265,20 +273,27 @@
                 second = second < 10 ? ('0' + second) : second;
                 return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;
             },
-            godetail(index){
+            godetail(i){
+                axios.get('/article/get?id='+i.id)
+                    .then((res)=>{
+                        let c = res.data.data.article;
+                        this.downList = res.data.data.aierArticleFiles;
+                        this.dataContent = c;
+                        this.addOne(i.id)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
 
-                this.dataList[index].pageView +=1 ;
-                this.dataContent = this.dataList[index];
-                // this.dataTitle = this.dataList[index].name||'';
-                //发送请求，点击量加一
-                axios.get('/article/click?id='+this.dataList[index].id)
+            },
+            addOne(i){
+                axios.get('/article/click?id='+i)
                     .then(function (response) {
                         console.log("点击量加1");
                     })
                     .catch(function (error) {
                         console.log(error);
                     });
-
             },
             handleSizeChange(val) {
                 this.page.pageSize = val;

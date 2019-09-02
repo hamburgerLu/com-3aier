@@ -22,7 +22,7 @@ public class FileService extends AppBaseService {
     @Autowired
     private T3aierArticleFileMapper t3aierArticleFileMapper;
 
-    private static String address_pre = "/root/";
+    private static String address_pre = "";
 
 
 

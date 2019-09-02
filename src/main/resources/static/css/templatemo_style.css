@@ -392,7 +392,7 @@ a#mobile_menu {
   list-style: none;
 }
 .top-c ul li {
-  display: block;
+  /*display: block;*/
   margin-bottom: 3px;
   color: black;
   font-size: 14px;
@@ -601,11 +601,11 @@ a#mobile_menu {
   background: url(../img/footer-bg.png) no-repeat bottom;
   background-size: cover;
   color: #ffffff;
-  position: fixed;
   width: 100%;
-  bottom: 0;
-  z-index: 7;
   padding: 30px 0;
+}
+.vue-news{
+  height: 100%;
 }
 .news-content{
   margin-bottom: 30px;
@@ -614,7 +614,7 @@ a#mobile_menu {
 
 }
 .nc-l{
-  width: 200px;
+  width: 300px;
   border-right: 1px solid #39c8e2;
 }
 .nc-l ul{

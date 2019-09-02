@@ -13,6 +13,8 @@ import com.threeAier.app.service.ArticleService;
 import com.threeAier.app.service.FileService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.converters.DateConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -94,7 +96,7 @@ public class ArticleController extends AppBaseController {
 
         t3aierArticle.setCreater(userName);
         t3aierArticle.setUpdater(userName);
-        t3aierArticle.setCreateTime(new Date());
+//        t3aierArticle.setCreateTime(new Date());
         t3aierArticle.setUpdateTime(new Date());
 
         int id = articleService.add(t3aierArticle,null);
@@ -114,6 +116,14 @@ public class ArticleController extends AppBaseController {
 
 //        List<MultipartFile> files =  (List<MultipartFile>) jsonObject.get("files");
         T3aierArticle t3aierArticle = new T3aierArticle();
+
+        //处理时间格式
+        DateConverter dateConverter = new DateConverter();
+        //设置日期格式
+        dateConverter.setPatterns(new String[]{"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss"});
+        //注册格式
+        ConvertUtils.register(dateConverter, Date.class);
+
         BeanUtils.populate(t3aierArticle, (Map<String, ? extends Object>) jsonObject.get("t3aierArticle"));
         List<Integer> articleIds  = (List<Integer>) jsonObject.get("articleIds");
 

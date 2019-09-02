@@ -14,12 +14,12 @@
 		<script src="https://unpkg.com/element-ui@2.8.2/lib/index.js"></script>
 		<script src="https://unpkg.com/wangeditor@3.1.1/release/wangEditor.min.js"></script>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-		<script src="https://unpkg.com/jquery@3.4.1/dist/jquery.js"></script>
+		<script src="/js/jquery@3.4.1.js"></script>
 		<script src="../../static/static/kj/layer/layer.js"></script>
 		<script src="../../static/static/sa.js"></script>
 		<script src="data-list.js"></script>
 		<style>
-
+			.el-picker-panel{z-index: 999999!important;}
 			.c-item .c-label{width: 7em;}
 
 			/* wang富文本编辑器 */
@@ -52,6 +52,18 @@
 					<div class="c-item" style="width: 100%;">
 						<label class="c-label">文章标题：</label>
 						<el-input size="small" v-model="m.title" style="width: 700px;" placeholder="例如：2002年的第一场雪"></el-input>
+					</div>
+					<div class="c-item" style="width: 100%;">
+						<label class="c-label">点击量：</label>
+						<el-input size="small" v-model="m.pageView" style="width: 700px;" placeholder="例如：2002年的第一场雪"></el-input>
+					</div>
+					<div class="c-item" style="width: 100%;">
+						<label class="c-label">发表时间：</label>
+						<el-date-picker
+								v-model="m.pageTime"
+								type="datetime"
+								placeholder="选择日期时间">
+						</el-date-picker>
 					</div>
 
 					<br />
@@ -112,6 +124,8 @@
 				return {
 					title: '',
 					content: '',
+					pageView:'',
+					pageTime:'',
 					is_public: 1
 				}
 			}
@@ -156,35 +170,40 @@
                     handlePreview(file) {
                         console.log(file);
                     },
+                    formatDateTime(inputTime) {
+                        var date = new Date(inputTime);
+                        var y = date.getFullYear();
+                        var m = date.getMonth() + 1;
+                        m = m < 10 ? ('0' + m) : m;
+                        var d = date.getDate();
+                        d = d < 10 ? ('0' + d) : d;
+                        var h = date.getHours();
+                        h = h < 10 ? ('0' + h) : h;
+                        var minute = date.getMinutes();
+                        var second = date.getSeconds();
+                        minute = minute < 10 ? ('0' + minute) : minute;
+                        second = second < 10 ? ('0' + second) : second;
+                        return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;
+                    },
 					// 提交 
 					ok: function() {
 						// 开始增加或修改
 						if(this.id == 0) {
 						    let where = {
                                 content: editor.txt.text(),
-                                name: this.m.title
+                                name: this.m.title,
+								pageView:this.m.pageView,
+                                createTime:this.m.pageTime
                             }
                             let _that = this;
                                 axios.post('/article/add', where)
                                     .then(function (response) {
-                                        debugger;
-                                        {
                                             _that.upId.id = response.data.data;
                                             _that.$refs.upload.submit();
-
-                                            // layer.alert('编辑成功', {}, function(){
-                                            //     this.parent.app.f5();
-                                            //     parent.layer.closeAll('iframe');
-                                            // }.bind(this));
-
-                                            layer.alert('新增成功', function(index){
-                                                layer.close(index);
-                                                // this.parent.app.f5();
-                                                parent.layer.closeAll('iframe');
-                                                // _that.parent.app.f5();
-                                                window.location.herf="/back_index";
-                                            }.bind(this));
-										}
+                                        layer.alert('新增成功', {}, function(){
+                                            editor.txt.html("");
+                                            location.reload();
+                                        }.bind(this));
                                     })
                                     .catch(function (error) {
                                         console.log(error);
@@ -195,31 +214,15 @@
                                 t3aierArticle:{
                                 content: editor.txt.text(),
 									name: this.m.title,
+                                    pageView:this.m.pageView,
+                                    createTime:this.formatDateTime(this.m.pageTime),
                                 deleteFlag:0,
                                 id:this.id
                               },
                                 articleIds:this.fileDel
 							};
-                            // this.fileTemp.forEach(i=>{
-                            //     this.fileList.forEach(m=>{
-                            //         if(m.id!==i.id){
-                            //             where.articleIds.push(i.id);
-							// 		}
-							// 	})
-							// })
-                            // this.fileList.forEach(i=>{
-                            //     this.fileTemp.forEach(m=>{
-                            //         if(m.id!==i.id){
-                            //             where.articleIds.push(i.id);
-                            //         }
-                            //     })
-                            // })
-                            let that = this;
                             axios.post('/article/modify', where)
                                 .then(function (response) {
-                                    // if(response.data.code == undefined){
-									// 	window.location.herf="/login";
-									// }
                                     layer.alert('编辑成功', {}, function(){
                                         this.parent.app.f5();
                                         parent.layer.closeAll('iframe');
@@ -250,6 +253,8 @@
                             .then(function (response) {
                                 that.m.title = response.data.data.article.name;
                                 that.m.content =response.data.data.article.content;
+                                that.m.pageView =response.data.data.article.pageView;
+                                that.m.pageTime =response.data.data.article.createTime;
                                 create_editor(that.m.content);
                                 that.fileList = response.data.data.aierArticleFiles.map(i=>{
                                     return {id:i.id,name:i.fileName}

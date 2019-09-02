@@ -14,8 +14,8 @@
         menuItems = topMenu.find("a"),
         // Anchors corresponding to menu items
         scrollItems = menuItems.map(function(){
-          var item = $($(this).attr("href"));
-          if (item.length) { return item; }
+            var item = $($.parseHTML($(this).attr("href")));
+            if (item.length) { return item; }
         });
 
     // Bind click handler to menu items
