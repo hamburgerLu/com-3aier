@@ -22,7 +22,7 @@ public class FileService extends AppBaseService {
     @Autowired
     private T3aierArticleFileMapper t3aierArticleFileMapper;
 
-    private static String address_pre = "";
+    private static String address_pre = "/root/upload/";
 
 
 
@@ -41,7 +41,7 @@ public class FileService extends AppBaseService {
         String fileAddress = address_pre + fileName;
 
         try (FileInputStream fis = (FileInputStream) multipartFile.getInputStream();
-             FileOutputStream fos = new FileOutputStream(new File(fileName))) {
+             FileOutputStream fos = new FileOutputStream(new File(fileAddress))) {
 
             byte[] b = new byte[1024];
             int n;
@@ -77,7 +77,7 @@ public class FileService extends AppBaseService {
         //导出到页面
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         try (InputStream in = new FileInputStream(address);) {
-            setResponseHeader(response, articleFile.getFileName());
+            setResponseHeader(response, articleFile.getFileAddress());
             OutputStream os = response.getOutputStream();
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -87,6 +87,7 @@ public class FileService extends AppBaseService {
             in.close();
             os.close();
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("导出到页面出错");
         }
 
@@ -105,7 +106,7 @@ public class FileService extends AppBaseService {
             try {
                 fileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1");
             } catch (UnsupportedEncodingException e) {
-//                e.printStackTrace();
+                e.printStackTrace();
                 log.error("获取文件名失败");
             }
             response.setContentType("application/octet-stream;charset=ISO8859-1");
