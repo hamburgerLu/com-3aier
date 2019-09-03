@@ -8,6 +8,9 @@
     http://www.templatemo.com/tm-420-ocean
     -->
     <title>海南三艾尔环境监测技术有限公司官网</title>
+
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge" />-->
+    <!--<meta name="renderer" content="webkit">-->
     <meta name="description" content=""/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <link rel="shortcut icon" href="favicon.ico"/>
@@ -33,6 +36,7 @@
     <script>
 
     </script>
+    <script src = "https://cdn.polyfill.io/v2/polyfill.min.js"></script>
     <style>
         @media (min-width: 960px) {
             .top-c h3.topc-title {
@@ -258,7 +262,7 @@
                         console.log(error);
                     });
             },
-            formatDateTime(inputTime) {
+            formatDateTime: function(inputTime) {
                 var date = new Date(inputTime);
                 var y = date.getFullYear();
                 var m = date.getMonth() + 1;
@@ -273,20 +277,20 @@
                 second = second < 10 ? ('0' + second) : second;
                 return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;
             },
-            godetail(i){
+            godetail: function(i){
                 axios.get('/article/get?id='+i.id)
-                    .then((res)=>{
+                    .then(function(res){
                         let c = res.data.data.article;
-                        this.downList = res.data.data.aierArticleFiles;
-                        this.dataContent = c;
-                        this.addOne(i.id)
+                        this.app.downList = res.data.data.aierArticleFiles;
+                        this.app.dataContent = c;
+                        this.app.addOne(i.id)
                     })
                     .catch(function (error) {
                         console.log(error);
                     });
 
             },
-            addOne(i){
+            addOne: function(i){
                 axios.get('/article/click?id='+i)
                     .then(function (response) {
                         console.log("点击量加1");
@@ -295,15 +299,15 @@
                         console.log(error);
                     });
             },
-            handleSizeChange(val) {
+            handleSizeChange: function(val) {
                 this.page.pageSize = val;
                 this.f5();
             },
-            handleCurrentChange(val) {
+            handleCurrentChange: function(val) {
                 this.page.pageNo = val;
                 this.f5();
             },
-            deletId(val){
+            deletId: function(val){
                 let where = {
                     t3aierArticle:{
                         deleteFlag:1,
