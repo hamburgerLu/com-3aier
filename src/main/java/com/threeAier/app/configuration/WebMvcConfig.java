@@ -39,6 +39,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         factory.setMaxFileSize("51200KB"); //KB,MB
         /// 设置总上传数据总大小
         factory.setMaxRequestSize("51200KB");
+        factory.setLocation("/root/tempUpload/");
         return factory.createMultipartConfig();
     }
 
